@@ -1,0 +1,6 @@
+{
+  "name": "Sandhani RMC Unit — Voluntary Blood & Eye Donation Portal",
+  "description": "Full-stack voluntary blood and posthumous eye donation platform for Sandhani, Rajshahi Medical College Unit with 90-day medical eligibility engine and 3-tier RBAC portals.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

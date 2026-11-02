@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../sandhani.db"
+}
+
+enum Role {
+  SUPER_ADMIN
+  SANDHANI_MEMBER
+  DONOR
+}
+
+model User {
+  id               String           @id @default(uuid())
+  name             String
+  email            String           @unique
+  phone            String           @unique
+  passwordHash     String
+  role             Role             @default(DONOR)
+  bloodGroup       String           // "A+", "B-", etc.
+  dob              String?
+  gender           String?
+  unit             String?          // e.g. "Rajshahi Medical College (RMC Unit)"
+  lastDonationDate DateTime?
+  isAvailable      Boolean          @default(true)
+  donations        DonationRecord[]
+  createdAt        DateTime         @default(now())
+}
+
+model Campaign {
+  id            String           @id @default(uuid())
+  title         String
+  location      String
+  startDate     DateTime
+  endDate       DateTime
+  targetBags    Int
+  coverImageUrl String?
+  donations     DonationRecord[]
+  createdAt     DateTime         @default(now())
+}
+
+model DonationRecord {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  campaignId   String?
+  campaign     Campaign? @relation(fields: [campaignId], references: [id])
+  donationDate DateTime  @default(now())
+  bagNumber    String?
+  volumeMl     Int       @default(450)
+  weightKg     Float?
+  hemoglobin   Float?
+  notes        String?
+}
+
+model FridgeBloodBag {
+  id             String   @id @default(uuid())
+  serialNumber   String   @unique
+  bloodGroup     String
+  collectionDate String
+  expiryDate     String
+  volumeMl       Int      @default(450)
+  donorName      String
+  compartment    String
+  status         String   @default("IN_FRIDGE")
+  notes          String?
+  createdAt      DateTime @default(now())
+}
+
+model VaccineCatalog {
+  id            String   @id @default(uuid())
+  name          String
+  manufacturer  String
+  targetDisease String
+  priceBdt      Int
+  totalDoses    Int
+  scheduleText  String
+  intervalDays  Int      @default(30)
+  stockCount    Int      @default(100)
+  storageTemp   String   @default("2°C–8°C Cold Chain")
+  updatedAt     DateTime @default(now())
+}
+
+model VaccinationRecord {
+  id               String   @id @default(uuid())
+  userId           String?
+  patientName      String
+  patientPhone     String
+  bloodGroup       String
+  vaccineId        String
+  vaccineName      String
+  doseNumber       Int
+  totalDoses       Int
+  dateAdministered String
+  nextDoseDate     String?
+  certificateNo    String
+  status           String
+  notes            String?
+  createdAt        DateTime @default(now())
+}
+
+model SandhaniMemberProfile {
+  id          String   @id @default(uuid())
+  name        String
+  phone       String
+  designation String
+  batch       String
+  bloodGroup  String
+  photoUrl    String
+  createdAt   DateTime @default(now())
+}
+
+model GalleryPhoto {
+  id        String   @id @default(uuid())
+  title     String
+  category  String
+  imageUrl  String
+  caption   String
+  createdAt DateTime @default(now())
+}
